@@ -1,17 +1,19 @@
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
+package level2;
 
-class Solution1835 {
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class Solution1835 {
     static List<String> orderList;
     static Map<String, Integer> board;
-    static String[] people ;
+    static String[] people;
 
     public int solution(int n, String[] data) {
         orderList = new ArrayList<>();
         board = new HashMap<>();
-        people = new String[] { "A", "C", "F", "J", "M", "N", "R", "T" };
+        people = new String[]{"A", "C", "F", "J", "M", "N", "R", "T"};
         int answer = 0;
         for (String p : people) {
             board.put(p, 1);
@@ -64,11 +66,10 @@ class Solution1835 {
                 }
             }
         }
-
         return true;
     }
 
     public static void main(String[] args) {
-        System.out.println(new Solution().solution(1, new String[] { "N~F=0", "R~T>2" }));
+        System.out.println(new Solution1835().solution(1, new String[]{"N~F=0", "R~T>2"}));
     }
 }
