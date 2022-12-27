@@ -1,3 +1,7 @@
+package level2;
+
+import java.util.Arrays;
+
 class Solution1829 {
     static int numberOfArea;
     static int maxSizeOfOneArea;
@@ -12,7 +16,7 @@ class Solution1829 {
         maxSizeOfOneArea = 0;
         visited = new boolean[m][n];
 
-        for (int i = 0 ; i < m; i++) {
+        for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
                 if (!visited[i][j] && picture[i][j] != 0) {
                     cnt = 0;
@@ -30,13 +34,13 @@ class Solution1829 {
     }
 
     public static void dfs(int[][] picture, int color, int x, int y) {
-        for(int[] dir: directions) {
+        for (int[] dir : directions) {
             int nx = x + dir[0];
             int ny = y + dir[1];
 
             if (nx < 0 || picture.length <= nx ||
                     ny < 0 || picture[0].length <= ny) {
-                continue ;
+                continue;
             }
 
             if (visited[nx][ny]) {
@@ -55,14 +59,15 @@ class Solution1829 {
     }
 
     public static void main(String[] args) {
-        System.out.println(new Solution().solution(6, 4, new int[][]{
-                {1, 1, 1, 0},
-                {1, 1, 1, 0},
-                {0, 0, 0, 1},
-                {0, 0, 0, 1},
-                {0, 0, 0, 1},
-        }));
+        System.out.println(
+                Arrays.toString(
+                        new Solution1829().solution(6, 4, new int[][]{
+                                {1, 1, 1, 0},
+                                {1, 1, 1, 0},
+                                {0, 0, 0, 1},
+                                {0, 0, 0, 1},
+                                {0, 0, 0, 1},
+                        })));
 
     }
-
 }
