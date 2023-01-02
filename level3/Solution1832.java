@@ -1,6 +1,6 @@
 package level3;
 
-public class Solution1836 {
+public class Solution1832 {
     static int MOD = 20170805;
 
     public static int solution(int m, int n, int[][] cityMap) {
