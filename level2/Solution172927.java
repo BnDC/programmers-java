@@ -1,104 +1,63 @@
 package level2;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-
-// lv2 광물 캐기 - 실패
+// lv2 광물 캐기 - 성공
 class Solution172927 {
 	int answer = Integer.MAX_VALUE;
+	int length;
 
-	int[] permutation = new int[3];
-	String[] mineralsArr;
 	int[] pickax;
-
-	Map<Fatigue, Integer> map = new HashMap<>();
+	String[] mineralsArr;
 
 	public int solution(int[] picks, String[] minerals) {
-		init();
-
-		mineralsArr = minerals;
 		pickax = picks;
+		mineralsArr = minerals;
+		length = minerals.length;
 
 		dfs(0, 0);
-
 		return answer;
 	}
 
-	public void init() {
-		map.put(new Fatigue(0, "diamond"), 1);
-		map.put(new Fatigue(0, "iron"), 1);
-		map.put(new Fatigue(0, "stone"), 1);
-
-		map.put(new Fatigue(1, "diamond"), 5);
-		map.put(new Fatigue(1, "iron"), 1);
-		map.put(new Fatigue(1, "stone"), 1);
-
-		map.put(new Fatigue(2, "diamond"), 25);
-		map.put(new Fatigue(2, "iron"), 5);
-		map.put(new Fatigue(2, "stone"), 1);
-	}
-
-	public void dfs(int cnt, int flag) {
-		if (cnt >= 3) {
-			answer = Math.min(answer, mine());
+	public void dfs(int idx, int fatigue) {
+		if (idx >= length) {
+			answer = Math.min(answer, fatigue);
 			return;
 		}
 
-		for (int i = 0; i < 3; i++) {
-			if ((flag & 1 << i) != 0)
-				continue;
-			permutation[cnt] = i;
-			dfs(cnt + 1, flag | (1 << i));
+		if (pickax[0] != 0) {
+			pickax[0]--;
+			dfs(idx + 5, fatigue + calculateFatigue(0, idx));
+			pickax[0]++;
+		}
+		if (pickax[1] != 0) {
+			pickax[1]--;
+			dfs(idx + 5, fatigue + calculateFatigue(1, idx));
+			pickax[1]++;
+		}
+		if (pickax[2] != 0) {
+			pickax[2]--;
+			dfs(idx + 5, fatigue + calculateFatigue(2, idx));
+			pickax[2]++;
+		}
+
+		if (pickax[0] + pickax[1] + pickax[2] == 0) {
+			answer = Math.min(answer, fatigue);
 		}
 	}
 
-	public int mine() {
-		int[] copyOfPickax = new int[3];
-		System.arraycopy(pickax, 0, copyOfPickax, 0, 3);
-
+	public int calculateFatigue(int pickax, int start) {
 		int result = 0;
-		int mineralIdx = 0;
-		int mineralLength = mineralsArr.length;
-
-		loop:
-		for (int i = 0; i < 3; i++) {
-			int now = permutation[i];
-			while (copyOfPickax[now] > 0) {
-				for (int j = 0; j < 5; j++) {
-					if (mineralIdx >= mineralLength)
-						break loop;
-					result += map.get(new Fatigue(now, mineralsArr[mineralIdx]));
-					mineralIdx++;
-				}
-				--copyOfPickax[now];
-			}
+		for (int i = start; i < start + 5; i++) {
+			if (i >= length)
+				break;
+			if (pickax == 2 && "diamond".equals(mineralsArr[i]))
+				result += 25;
+			else if (pickax == 2 && "iron".equals(mineralsArr[i]))
+				result += 5;
+			else if (pickax == 1 && "diamond".equals(mineralsArr[i]))
+				result += 5;
+			else
+				result++;
 		}
 		return result;
-	}
-
-	static class Fatigue {
-		int pickax;
-		String mineral;
-
-		public Fatigue(int pickax, String mineral) {
-			this.pickax = pickax;
-			this.mineral = mineral;
-		}
-
-		@Override
-		public boolean equals(Object obj) {
-			if (this == obj)
-				return true;
-			if (obj == null || this.getClass() != obj.getClass())
-				return false;
-			Fatigue fatigue = (Fatigue)obj;
-			return fatigue.mineral.equals(this.mineral) && fatigue.pickax == this.pickax;
-		}
-
-		@Override
-		public int hashCode() {
-			return Objects.hash(pickax, mineral);
-		}
 	}
 }
