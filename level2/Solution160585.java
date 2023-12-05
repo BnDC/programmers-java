@@ -1,5 +1,6 @@
 package level2;
 
+// lv2 광물 캐기 - 성공
 public class Solution160585 {
 	public int solution(String[] board) {
 		int o = 0, x = 0;
