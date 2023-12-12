@@ -1,11 +1,10 @@
 package level3;
 
-// (lv3) 2차원 동전 뒤집기 - 실패
+// (lv3) 2차원 동전 뒤집기 - 성공
 public class Solution131703 {
 	int n, m;
 
 	public int solution(int[][] beginning, int[][] target) {
-		int answer;
 		n = beginning.length;
 		m = beginning[0].length;
 
@@ -22,80 +21,58 @@ public class Solution131703 {
 			}
 		}
 
-		System.out.println("### printDiff ###");
-		printArr(diffArr);
+		// 처음 행 1 -> 0으로 바꾸었을 때, 바꾸는 횟수의 최솟값
+		int result = 0;
+		for (int i = 0; i < m; i++) {
+			if (simulatedArr[0][i] == 1) {
+				result++;
+				toggleCol(simulatedArr, i);
+			}
+		}
 
-		answer = getMinRowFirst(simulatedArr);
+		for (int i = 0; i < n; i++) {
+			if (simulatedArr[i][0] == 1) {
+				result++;
+				toggleRow(simulatedArr, i);
+			}
+		}
+
+		int answer = isPossible(simulatedArr) ? result : Integer.MAX_VALUE;
+
+		// 초기화
+		result = 0;
 		for (int i = 0; i < n; i++) {
 			System.arraycopy(diffArr[i], 0, simulatedArr[i], 0, m);
 		}
 
-		answer = Math.min(answer, getMinColFirst(simulatedArr));
-		return answer != Integer.MAX_VALUE ? answer : -1;
-	}
-
-	private int getMinRowFirst(int[][] simulatedArr) {
-		int result = toggleRow(simulatedArr) + toggleCol(simulatedArr);
-		if (!isPossible(simulatedArr))
-			return Integer.MAX_VALUE;
-		return result;
-	}
-
-	private int getMinColFirst(int[][] simulatedArr) {
-		int result = toggleCol(simulatedArr) + toggleRow(simulatedArr);
-		if (!isPossible(simulatedArr))
-			return Integer.MAX_VALUE;
-		return result;
-	}
-
-	private int toggleRow(int[][] simulatedArr) {
-		int result = 0;
-		boolean flag;
-		for (int i = 0; i < n; i++) {
-			flag = false;
-			for (int j = 0; j < m; j++) {
-				if (simulatedArr[i][j] == 1) {
-					flag = true;
-					result++;
-					break;
-				}
-			}
-			if (flag) {
-				for (int j = 0; j < m; j++) {
-					simulatedArr[i][j] = (simulatedArr[i][j] + 1) % 2;
-				}
-			}
-		}
-
-		System.out.println("### toggleRow ###");
-		printArr(simulatedArr);
-
-		return result;
-	}
-
-	private int toggleCol(int[][] simulatedArr) {
-		int result = 0;
-		boolean flag;
+		// 처음 행 0 -> 1으로 바꾸었을 때, 바꾸는 횟수의 최솟값
 		for (int i = 0; i < m; i++) {
-			flag = false;
-			for (int j = 0; j < n; j++) {
-				if (simulatedArr[j][i] == 1) {
-					flag = true;
-					result++;
-					break;
-				}
-			}
-			if (flag) {
-				for (int j = 0; j < m; j++) {
-					simulatedArr[i][j] = (simulatedArr[i][j] + 1) % 2;
-				}
+			if (simulatedArr[0][i] == 0) {
+				result++;
+				toggleCol(simulatedArr, i);
 			}
 		}
 
-		System.out.println("### toggleCol ###");
-		printArr(simulatedArr);
+		for (int i = 0; i < n; i++) {
+			if (simulatedArr[i][0] == 1) {
+				result++;
+				toggleRow(simulatedArr, i);
+			}
+		}
 
-		return result;
+		return isPossible(simulatedArr) ? Math.min(answer, result) : -1;
+	}
+
+	private void toggleRow(int[][] simulatedArr, int rowNum) {
+		for (int i = 0; i < m; i++) {
+			simulatedArr[rowNum][i] = (simulatedArr[rowNum][i] + 1) % 2;
+		}
+	}
+
+	private void toggleCol(int[][] simulatedArr, int colNum) {
+		for (int i = 0; i < n; i++) {
+			simulatedArr[i][colNum] = (simulatedArr[i][colNum] + 1) % 2;
+		}
 	}
 
 	private boolean isPossible(int[][] simulatedArr) {
@@ -106,15 +83,6 @@ public class Solution131703 {
 			}
 		}
 		return true;
-	}
-
-	void printArr(int[][] arr) {
-		for (int i = 0; i < n; i++) {
-			for (int j = 0; j < m; j++) {
-				System.out.print(arr[i][j] + " ");
-			}
-			System.out.println();
-		}
 	}
 
 	public static void main(String[] args) {
@@ -134,6 +102,39 @@ public class Solution131703 {
 								{0, 0, 1, 0, 1},
 								{0, 0, 0, 1, 0},
 								{0, 0, 0, 0, 1}
-						}));
+						})
+						== 5);
+
+		System.out.println(
+				solution131703.solution(
+						new int[][] {
+								{0, 0, 0},
+								{0, 0, 0},
+								{0, 0, 0},
+						},
+						new int[][] {
+								{1, 0, 1},
+								{0, 0, 0},
+								{0, 0, 0},
+						})
+						== -1);
+
+		System.out.println(
+				solution131703.solution(
+						new int[][] {
+								{0, 0, 1, 0, 0},
+								{1, 0, 0, 0, 0},
+								{0, 0, 0, 0, 0},
+								{0, 0, 0, 0, 0},
+								{0, 0, 0, 0, 0}
+						},
+						new int[][] {
+								{0, 1, 0, 1, 1},
+								{0, 0, 0, 0, 0},
+								{1, 0, 0, 0, 0},
+								{1, 0, 0, 0, 0},
+								{1, 0, 0, 0, 0}
+						})
+						== 2);
 	}
 }
